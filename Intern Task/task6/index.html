@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>To-Do App</title>
+  
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .todo-container {
+      margin-top: 20px;
+    }
+
+    .task-input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .task-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .task-list li {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      background-color: #5d929797;
+      margin-bottom: 10px;
+    }
+
+    .task-list li.completed {
+      background-color: #00823f;
+    }
+
+    .task-list li .task-text {
+      flex-grow: 1;
+      margin-left: 10px;
+    }
+
+    .task-list li .actions {
+      margin-left: 10px;
+    }
+
+    .task-list li .actions button {
+      padding: 5px;
+      margin-left: 5px;
+      font-size: 12px;
+    }
+
+    .completed-list {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>To-Do App</h1>
+  <div class="todo-container">
+    <input type="text" class="task-input" id="task-input" placeholder="Enter a new task">
+    <button onclick="addTask()">Add Task</button>
+    <ul class="task-list" id="task-list"></ul>
+  </div>
+  <div class="completed-list">
+    <h3>Completed Tasks</h3>
+    <ul class="task-list" id="completed-list"></ul>
+  </div>
+
+  <script>
+    // Array to store tasks
+    var tasks = [];
+
+    // Function to add a new task
+    function addTask() {
+      var taskInput = document.getElementById('task-input');
+      var taskText = taskInput.value.trim();
+
+      if (taskText !== '') {
+        var task = {
+          id: Date.now(),
+          text: taskText,
+          completed: false,
+          date: new Date().toLocaleString()
+        };
+
+        tasks.push(task);
+        taskInput.value = '';
+        renderTasks();
+      }
+    }
+
+    // Function to render tasks
+    function renderTasks() {
+      var taskList = document.getElementById('task-list');
+      var completedList = document.getElementById('completed-list');
+
+      taskList.innerHTML = '';
+      completedList.innerHTML = '';
+
+      tasks.forEach(function(task) {
+        var li = document.createElement('li');
+        var taskText = document.createElement('span');
+        var actions = document.createElement('span');
+        var completeButton = document.createElement('button');
+        var deleteButton = document.createElement('button');
+
+        taskText.textContent = task.text;
+        actions.className = 'actions';
+        completeButton.textContent = 'Complete';
+        deleteButton.textContent = 'Delete';
+
+        completeButton.addEventListener('click', function() {
+          task.completed = true;
+          renderTasks();
+        });
+
+        deleteButton.addEventListener('click', function() {
+          var index = tasks.findIndex(function(t) {
+            return t.id === task.id;
+          });
+
+          if (index !== -1) {
+            tasks.splice(index, 1);
+            renderTasks();
+          }
+        });
+
+        li.appendChild(taskText);
+        li.appendChild(actions);
+        actions.appendChild(completeButton);
+        actions.appendChild(deleteButton);
+
+        if (task.completed) {
+          li.className = 'completed';
+          completedList.appendChild(li);
+        } else {
+          taskList.appendChild(li);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
